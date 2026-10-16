@@ -1,0 +1,81 @@
+<!-- package-chef/pages/recipes/recipes.wxml -->
+<view class="page">
+
+  <!-- ============ 统计 ============ -->
+  <view class="stats">
+    <view class="stat">
+      <text class="stat-num">{{stats.total}}</text>
+      <text class="stat-label">道菜</text>
+    </view>
+    <view class="stat">
+      <text class="stat-num">{{stats.withRecipe}}</text>
+      <text class="stat-label">有做法</text>
+    </view>
+    <view class="stat">
+      <text class="stat-num">{{stats.everCooked}}</text>
+      <text class="stat-label">做过</text>
+    </view>
+  </view>
+
+  <!-- ============ 搜索 + 排序 ============ -->
+  <view class="toolbar">
+    <input
+      class="search"
+      placeholder="找菜名"
+      placeholder-class="search-ph"
+      value="{{keyword}}"
+      bindinput="onSearch"
+    />
+    <view class="sorts">
+      <view class="sort {{sort === 'cookCount' ? 'sort-on' : ''}}" data-sort="cookCount" bindtap="onSort">常做</view>
+      <view class="sort {{sort === 'recent' ? 'sort-on' : ''}}" data-sort="recent" bindtap="onSort">最近改</view>
+      <view class="sort {{sort === 'name' ? 'sort-on' : ''}}" data-sort="name" bindtap="onSort">名字</view>
+    </view>
+  </view>
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">📚</view>
+    <view class="state-desc">正在翻菜谱…</view>
+  </view>
+
+  <view class="state" wx:elif="{{errMsg}}">
+    <view class="state-emoji">😵</view>
+    <view class="state-title">{{errMsg}}</view>
+    <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="load">重试</view>
+  </view>
+
+  <view class="state" wx:elif="{{filtered.length === 0}}">
+    <view class="state-emoji">🍳</view>
+    <view class="state-title">{{keyword ? '没有匹配的菜' : '菜谱还是空的'}}</view>
+    <view class="btn btn-primary mt-24" style="width:280rpx" bindtap="onAdd">加第一道菜</view>
+  </view>
+
+  <block wx:else>
+    <view class="dish card" wx:for="{{filtered}}" wx:key="_id">
+      <view class="dish-head">
+        <view class="row gap-8" style="min-width:0">
+          <text class="dish-name ellipsis">{{item.name}}</text>
+          <text class="heart" wx:if="{{item.herFavorite}}">❤</text>
+        </view>
+        <text class="dish-cat">{{item.categoryIcon}} {{item.categoryName}}</text>
+      </view>
+
+      <view class="dish-intro" wx:if="{{item.intro}}">{{item.intro}}</view>
+
+      <view class="dish-meta">
+        <text class="meta-item" wx:if="{{item.hasRecipe}}">{{item.stepCount}} 步</text>
+        <text class="meta-item" wx:else>还没写做法</text>
+        <text class="meta-item" wx:if="{{item.cookCount > 0}}">做过 {{item.cookCount}} 次</text>
+      </view>
+
+      <view class="dish-actions">
+        <view class="act act-main" bindtap="onOpen" data-id="{{item._id}}">看做法</view>
+        <view class="act" bindtap="onEdit" data-id="{{item._id}}">编辑</view>
+      </view>
+    </view>
+
+    <view class="add-btn safe-bottom" bindtap="onAdd">+ 加一道新菜</view>
+    <view style="height:140rpx"></view>
+  </block>
+
+</view>

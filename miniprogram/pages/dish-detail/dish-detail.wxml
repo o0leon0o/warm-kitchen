@@ -1,0 +1,100 @@
+<!-- pages/dish-detail/dish-detail.wxml -->
+<view class="page">
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">📖</view>
+    <view class="state-desc">正在打开做法…</view>
+  </view>
+
+  <view class="state" wx:elif="{{errMsg}}">
+    <view class="state-emoji">😵</view>
+    <view class="state-title">{{errMsg}}</view>
+    <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="load">重试</view>
+  </view>
+
+  <block wx:elif="{{dish}}">
+
+    <!-- ============ 头部 ============ -->
+    <view class="head">
+      <view class="head-name-row">
+        <text class="head-name">{{dish.name}}</text>
+        <text class="heart" wx:if="{{dish.herFavorite}}">❤</text>
+      </view>
+      <view class="head-intro" wx:if="{{dish.intro}}">{{dish.intro}}</view>
+      <view class="head-tags">
+        <text class="tag tag-primary" wx:if="{{spicyText}}">{{spicyText}}</text>
+        <text class="tag" wx:for="{{dish.tags}}" wx:key="*this">{{item}}</text>
+        <text class="tag" wx:if="{{dish.cookCount > 0}}">做过 {{dish.cookCount}} 次</text>
+      </view>
+      <view class="head-avoid" wx:if="{{dish.avoid.length > 0}}">
+        <text>注意：{{dish.avoid}}</text>
+      </view>
+    </view>
+
+    <!-- ============ 配料 ============ -->
+    <view class="card mt-24" wx:if="{{dish.recipe.ingredients.length > 0}}">
+      <view class="sec-title">需要准备</view>
+      <view class="ing" wx:for="{{dish.recipe.ingredients}}" wx:key="name">
+        <text class="ing-name">{{item.name}}</text>
+        <text class="ing-amount">{{item.amount}}</text>
+      </view>
+    </view>
+
+    <!-- ============ 步骤 ============ -->
+    <view class="card mt-24" wx:if="{{dish.recipe.steps.length > 0}}">
+      <view class="sec-title">怎么做</view>
+      <view class="step" wx:for="{{dish.recipe.steps}}" wx:key="order">
+        <view class="step-no">{{item.order}}</view>
+        <view class="step-body">
+          <text class="step-text">{{item.text}}</text>
+          <image
+            class="step-img"
+            wx:if="{{item.image}}"
+            src="{{item.image}}"
+            mode="widthFix"
+            lazy-load="{{true}}"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- ============ 小贴士 ============ -->
+    <view class="card mt-24" wx:if="{{dish.recipe.tips.length > 0}}">
+      <view class="sec-title">小贴士</view>
+      <view class="tip" wx:for="{{dish.recipe.tips}}" wx:key="*this">
+        <text class="tip-dot">·</text>
+        <text class="tip-text">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- ============ 攻略来源 ============ -->
+    <view class="card mt-24" wx:if="{{dish.recipe.sourceUrl}}">
+      <view class="sec-title">攻略来源</view>
+      <view class="source" bindtap="onOpenSource">
+        <text class="source-title">{{dish.recipe.sourceTitle || dish.recipe.sourceUrl}}</text>
+        <text class="source-hint">点一下复制链接</text>
+      </view>
+    </view>
+
+    <!-- ============ 空菜谱提示 ============ -->
+    <view class="state" wx:if="{{dish.recipe.steps.length === 0}}">
+      <view class="state-emoji">📝</view>
+      <view class="state-title">这道菜还没写做法</view>
+      <view class="state-desc">大厨还没来得及记下来</view>
+    </view>
+
+    <!-- 底部留白 -->
+    <view style="height:200rpx"></view>
+
+    <!-- ============ 底部操作条 ============ -->
+    <view class="bar safe-bottom">
+      <view class="btn btn-plain" style="flex:0 0 200rpx" bindtap="onStartCooking">开始做菜</view>
+      <view
+        class="btn flex-1 {{inCart ? 'btn-ghost' : 'btn-primary'}}"
+        bindtap="onToggleCart"
+      >{{inCart ? '已加入 ✓ 点一下移出' : '加入今晚的菜单'}}</view>
+    </view>
+
+  </block>
+
+</view>

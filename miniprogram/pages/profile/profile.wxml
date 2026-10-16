@@ -1,0 +1,79 @@
+<!-- pages/profile/profile.wxml -->
+<view class="page">
+
+  <!-- ============ 顶部身份（连点这里 5 次解锁管理入口） ============ -->
+  <view class="hero" bindtap="onTapTitle">
+    <view class="hero-avatar">{{role === 'me' ? '🍳' : '🥢'}}</view>
+    <view class="hero-info">
+      <view class="hero-name">{{role === 'me' ? meName : herName}}</view>
+      <view class="hero-role">{{roleText}}</view>
+    </view>
+  </view>
+
+  <!-- ============ 快捷：点过的菜 ============ -->
+  <view class="card mt-24 stat" bindtap="goOrders">
+    <view class="stat-num">{{myOrderCount}}</view>
+    <view class="stat-label">你点过的单</view>
+    <view class="stat-arrow">▸</view>
+  </view>
+
+  <!-- ============ 她的入口 ============ -->
+  <view class="card mt-24">
+    <view class="row between entry" bindtap="goOrder">
+      <text>去点菜</text>
+      <text class="entry-arrow">▸</text>
+    </view>
+    <view class="hairline"></view>
+    <view class="row between entry" bindtap="goOrders">
+      <text>以前点过什么</text>
+      <text class="entry-arrow">▸</text>
+    </view>
+  </view>
+
+  <!-- ============ 管理板块（只有连点标题 5 次后才出现） ============ -->
+  <block wx:if="{{adminUnlocked}}">
+    <view class="sec-head">
+      <text class="sec-title">大厨管理</text>
+      <text class="sec-lock" bindtap="onLockAdmin">藏起来</text>
+    </view>
+
+    <view class="card">
+      <view class="row between entry" bindtap="go" data-url="/package-chef/pages/dish-manage/dish-manage">
+        <text>菜品管理</text>
+        <text class="entry-arrow">▸</text>
+      </view>
+      <view class="hairline"></view>
+      <view class="row between entry" bindtap="go" data-url="/package-chef/pages/dish-edit/dish-edit">
+        <text>加一道新菜</text>
+        <text class="entry-arrow">▸</text>
+      </view>
+      <view class="hairline"></view>
+      <view class="row between entry" bindtap="go" data-url="/package-chef/pages/recipes/recipes">
+        <text>我的菜谱</text>
+        <text class="entry-arrow">▸</text>
+      </view>
+      <view class="hairline"></view>
+      <view class="row between entry" bindtap="go" data-url="/package-chef/pages/order-manage/order-manage">
+        <text>所有订单</text>
+        <text class="entry-arrow">▸</text>
+      </view>
+      <view class="hairline"></view>
+      <view class="row between entry" bindtap="go" data-url="/package-chef/pages/settings/settings">
+        <text>设置（文案 / 分类 / 机器人）</text>
+        <text class="entry-arrow">▸</text>
+      </view>
+    </view>
+
+    <view class="role-note" wx:if="{{!isAdmin}}">
+      <text>⚠️ 你现在不是大厨身份（角色：{{role}}），点进去会提示没有权限。</text>
+      <text>如果她比你更早打开小程序，你俩的身份需要交换一下。</text>
+    </view>
+  </block>
+
+  <!-- ============ 底部信息 ============ -->
+  <view class="foot">
+    <text wx:if="{{openidShort}}">设备标识 ···{{openidShort}}</text>
+    <text class="foot-tip">这个页面连点标题 5 次会有惊喜</text>
+  </view>
+
+</view>

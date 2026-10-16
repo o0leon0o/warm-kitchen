@@ -1,0 +1,50 @@
+{
+  "entryPagePath": "pages/order/order",
+  "pages": [
+    "pages/order/order",
+    "pages/profile/profile",
+    "pages/dish-detail/dish-detail",
+    "pages/order-success/order-success",
+    "pages/orders/orders"
+  ],
+  "subPackages": [
+    {
+      "root": "package-chef",
+      "name": "chef",
+      "pages": [
+        "pages/cook/cook",
+        "pages/recipes/recipes",
+        "pages/dish-edit/dish-edit",
+        "pages/dish-manage/dish-manage",
+        "pages/order-manage/order-manage",
+        "pages/settings/settings"
+      ]
+    }
+  ],
+  "tabBar": {
+    "color": "#9A9A9A",
+    "selectedColor": "#F76B8A",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/order/order", "text": "点菜" },
+      { "pagePath": "pages/profile/profile", "text": "我的" }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FFF7F9",
+    "navigationBarTitleText": "小厨房",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFF7F9",
+    "enablePullDownRefresh": false
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json",
+  "permission": {
+    "scope.userLocation": {
+      "desc": "本小程序不需要位置信息"
+    }
+  }
+}

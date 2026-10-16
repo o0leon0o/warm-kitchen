@@ -1,0 +1,59 @@
+<!-- pages/orders/orders.wxml -->
+<view class="page">
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">📜</view>
+    <view class="state-desc">正在翻旧账…</view>
+  </view>
+
+  <view class="state" wx:elif="{{errMsg}}">
+    <view class="state-emoji">😵</view>
+    <view class="state-title">{{errMsg}}</view>
+    <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="load">重试</view>
+  </view>
+
+  <view class="state" wx:elif="{{orders.length === 0}}">
+    <view class="state-emoji">🍚</view>
+    <view class="state-title">还没有点过菜</view>
+    <view class="state-desc">去点第一次吧</view>
+    <view class="btn btn-primary mt-24" style="width:280rpx" bindtap="goOrder">去点菜</view>
+  </view>
+
+  <block wx:else>
+    <view class="order card" wx:for="{{orders}}" wx:key="_id">
+      <view class="order-head">
+        <text class="order-date">{{item.dateText}}</text>
+        <text class="order-count">{{item.count}} 道菜</text>
+      </view>
+
+      <view class="order-items">
+        <view
+          class="order-item"
+          wx:for="{{item.items}}"
+          wx:for-item="d"
+          wx:key="dishId"
+          bindtap="onTapItem"
+          data-id="{{d.dishId}}"
+        >
+          <text class="order-item-dot">·</text>
+          <text class="order-item-name">{{d.name}}</text>
+          <text class="order-item-more">做法 ▸</text>
+        </view>
+      </view>
+
+      <view class="order-remark" wx:if="{{item.remark}}">
+        <text class="order-remark-label">她说</text>
+        <text>{{item.remark}}</text>
+      </view>
+
+      <view class="order-actions">
+        <view class="btn btn-ghost" style="height:72rpx;font-size:26rpx" bindtap="onReorder" data-id="{{item._id}}">
+          再来一次
+        </view>
+      </view>
+    </view>
+
+    <view class="list-end">— 只有你自己点过的单 —</view>
+  </block>
+
+</view>

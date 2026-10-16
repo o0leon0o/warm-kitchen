@@ -1,0 +1,179 @@
+/**
+ * app.wxss —— 全局样式
+ *
+ * 这里只放三类东西：
+ *   1. CSS 变量（颜色集中定义，想换配色改 utils/theme.js + 这里的默认值）
+ *   2. 极少量通用原子类（flex 排版、文字省略等），避免每个页面重复写样式
+ *   3. 通用卡片、按钮、标签的样式
+ *
+ * 页面自己的样式写在各页的 .wxss 里。
+ */
+
+page {
+  /* ---- 颜色 ---- */
+  --c-primary: #F76B8A;
+  --c-primary-light: #FCE4EA;
+  --c-primary-dark: #E44E70;
+  --c-bg: #FFF7F9;
+  --c-card: #FFFFFF;
+  --c-border: #F0E4E8;
+  --c-text: #2B2B2B;
+  --c-text-sub: #7A7A7A;
+  --c-text-light: #B5B5B5;
+  --c-danger: #E45B5B;
+  --c-success: #4CAF7D;
+
+  /* ---- 圆角与阴影 ---- */
+  --r-sm: 8rpx;
+  --r-md: 16rpx;
+  --r-lg: 24rpx;
+  --r-full: 999rpx;
+  --shadow-card: 0 4rpx 20rpx rgba(215, 150, 170, 0.10);
+
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-size: 28rpx;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+view, text, button, input, textarea, image, scroll-view {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   布局原子类
+   ============================================================ */
+.row { display: flex; flex-direction: row; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.between { justify-content: space-between; }
+.center { justify-content: center; align-items: center; }
+.wrap { flex-wrap: wrap; }
+.flex-1 { flex: 1; min-width: 0; }
+
+.gap-8 { gap: 8rpx; }
+.gap-12 { gap: 12rpx; }
+.gap-16 { gap: 16rpx; }
+.gap-24 { gap: 24rpx; }
+
+.mt-8 { margin-top: 8rpx; }
+.mt-16 { margin-top: 16rpx; }
+.mt-24 { margin-top: 24rpx; }
+.mt-40 { margin-top: 40rpx; }
+.mb-16 { margin-bottom: 16rpx; }
+.mb-24 { margin-bottom: 24rpx; }
+
+.p-24 { padding: 24rpx; }
+.px-24 { padding-left: 24rpx; padding-right: 24rpx; }
+.py-16 { padding-top: 16rpx; padding-bottom: 16rpx; }
+
+/* ============================================================
+   文字
+   ============================================================ */
+.t-title { font-size: 36rpx; font-weight: 600; color: var(--c-text); }
+.t-body { font-size: 28rpx; color: var(--c-text); }
+.t-sub { font-size: 24rpx; color: var(--c-text-sub); }
+.t-tiny { font-size: 22rpx; color: var(--c-text-light); }
+.t-primary { color: var(--c-primary); }
+.t-danger { color: var(--c-danger); }
+.t-bold { font-weight: 600; }
+
+/* 单行省略 */
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 两行省略 */
+.ellipsis-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* ============================================================
+   卡片 / 分割线 / 标签
+   ============================================================ */
+.card {
+  background: var(--c-card);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24rpx;
+}
+
+.hairline {
+  height: 1rpx;
+  background: var(--c-border);
+}
+
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: var(--r-full);
+  font-size: 22rpx;
+  background: #F5F5F5;
+  color: var(--c-text-sub);
+}
+
+.tag-primary {
+  background: var(--c-primary-light);
+  color: var(--c-primary);
+}
+
+/* ============================================================
+   按钮
+   ============================================================ */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 88rpx;
+  border-radius: var(--r-full);
+  font-size: 30rpx;
+  font-weight: 500;
+  transition: opacity .15s, transform .1s;
+}
+
+.btn-primary {
+  background: var(--c-primary);
+  color: #FFFFFF;
+}
+
+.btn-ghost {
+  background: #FFFFFF;
+  color: var(--c-primary);
+  border: 2rpx solid var(--c-primary);
+}
+
+.btn-plain {
+  background: #F5F5F5;
+  color: var(--c-text-sub);
+}
+
+.btn:active { opacity: .82; transform: scale(.985); }
+.btn-disabled {
+  background: #EDEDED !important;
+  color: #B5B5B5 !important;
+  pointer-events: none;
+}
+
+/* ============================================================
+   通用状态页（空 / 加载 / 出错）
+   ============================================================ */
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 60rpx;
+  text-align: center;
+}
+
+.state-emoji { font-size: 96rpx; line-height: 1; margin-bottom: 24rpx; }
+.state-title { font-size: 32rpx; color: var(--c-text); margin-bottom: 12rpx; }
+.state-desc { font-size: 26rpx; color: var(--c-text-sub); }
+
+/* 页面底部安全区（全面屏手机） */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }

@@ -1,0 +1,201 @@
+/* package-chef/pages/dish-edit/dish-edit.wxss */
+
+.page { padding: 24rpx 24rpx 40rpx; }
+
+.card-focus { border: 2rpx solid var(--c-primary); }
+
+.sec-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 18rpx;
+  display: flex;
+  align-items: center;
+}
+.sec-title::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: var(--c-primary);
+  margin-right: 12rpx;
+}
+
+/* ============ 表单 ============ */
+.field { margin-bottom: 22rpx; }
+.label {
+  display: block;
+  font-size: 25rpx;
+  color: var(--c-text-sub);
+  margin-bottom: 10rpx;
+}
+.req { color: var(--c-danger); }
+
+.input {
+  height: 80rpx;
+  background: #F8F6F7;
+  border-radius: var(--r-md);
+  padding: 0 22rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+.input-sm { height: 72rpx; font-size: 27rpx; }
+.ph { color: #BBB3B6; font-size: 26rpx; }
+
+.picker {
+  height: 80rpx;
+  background: #F8F6F7;
+  border-radius: var(--r-md);
+  padding: 0 22rpx;
+  font-size: 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picker-arrow { color: var(--c-text-light); }
+
+.switches { margin-top: 8rpx; }
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #F7F3F5;
+}
+.switch-label { font-size: 28rpx; display: block; }
+.switch-hint { font-size: 22rpx; color: var(--c-text-light); }
+
+/* ============ 标签 ============ */
+.chips { display: flex; flex-wrap: wrap; gap: 14rpx; }
+.chip {
+  padding: 12rpx 26rpx;
+  border-radius: var(--r-full);
+  background: #F5F2F3;
+  color: var(--c-text-sub);
+  font-size: 25rpx;
+}
+.chip-on { background: var(--c-primary); color: #FFFFFF; }
+.chip-warn { background: #FFF7EA; color: #A9762A; }
+.chip-warn-on { background: #E8A33D; color: #FFFFFF; }
+
+/* ============ 配料行 ============ */
+.ing-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
+}
+.del-btn {
+  flex: 0 0 auto;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #FDF0F2;
+  color: var(--c-danger);
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============ 步骤行 ============ */
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid #F7F3F5;
+}
+.step-no {
+  flex: 0 0 auto;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: var(--c-primary-light);
+  color: var(--c-primary);
+  font-size: 24rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8rpx;
+}
+.step-input {
+  flex: 1;
+  min-height: 72rpx;
+  background: #F8F6F7;
+  border-radius: var(--r-md);
+  padding: 16rpx 20rpx;
+  font-size: 27rpx;
+  box-sizing: border-box;
+}
+.step-tools {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+.tool {
+  width: 56rpx;
+  height: 48rpx;
+  border-radius: var(--r-sm);
+  background: #F5F2F3;
+  color: var(--c-text-sub);
+  font-size: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tool:active { background: #EAE4E7; }
+.tool-del { background: #FDF0F2; color: var(--c-danger); }
+
+/* ============ 小贴士 ============ */
+.tip-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #F7F3F5;
+}
+.tip-text { font-size: 26rpx; color: var(--c-text-sub); }
+
+/* ============ 通用小按钮 ============ */
+.mini-btn {
+  padding: 12rpx 26rpx;
+  border-radius: var(--r-full);
+  background: var(--c-primary-light);
+  color: var(--c-primary);
+  font-size: 24rpx;
+  flex: 0 0 auto;
+}
+.mini-btn:active { opacity: .75; }
+.mini-btn.wide {
+  width: 100%;
+  text-align: center;
+  padding: 18rpx 0;
+  box-sizing: border-box;
+}
+
+/* ============ 复盘 ============ */
+.textarea {
+  width: 100%;
+  min-height: 140rpx;
+  background: #F8F6F7;
+  border-radius: var(--r-md);
+  padding: 20rpx 22rpx;
+  font-size: 27rpx;
+  box-sizing: border-box;
+}
+.hint { margin-top: 12rpx; font-size: 22rpx; color: var(--c-text-light); }
+
+/* ============ 底部 ============ */
+.bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  gap: 16rpx;
+  padding: 18rpx 24rpx;
+  background: rgba(255,255,255,.96);
+  border-top: 1rpx solid var(--c-border);
+  z-index: 20;
+}

@@ -1,0 +1,54 @@
+/* pages/orders/orders.wxss */
+
+.page { padding: 24rpx 24rpx 60rpx; }
+
+.order { margin-bottom: 22rpx; }
+
+.order-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid var(--c-border);
+}
+.order-date { font-size: 28rpx; font-weight: 600; }
+.order-count { font-size: 23rpx; color: var(--c-text-light); }
+
+.order-items { padding: 8rpx 0; }
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  padding: 14rpx 0;
+}
+.order-item-dot { color: var(--c-primary); font-weight: 700; }
+.order-item-name { flex: 1; font-size: 28rpx; min-width: 0; }
+.order-item-more { font-size: 22rpx; color: var(--c-text-light); }
+
+.order-remark {
+  margin-top: 12rpx;
+  padding: 14rpx 18rpx;
+  background: #FFF6F8;
+  border-radius: var(--r-md);
+  font-size: 25rpx;
+  color: var(--c-text);
+}
+.order-remark-label {
+  font-size: 21rpx;
+  color: var(--c-primary);
+  margin-right: 10rpx;
+}
+
+.order-actions {
+  margin-top: 18rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+.order-actions .btn { padding: 0 34rpx; }
+
+.list-end {
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--c-text-light);
+  padding: 24rpx 0;
+}

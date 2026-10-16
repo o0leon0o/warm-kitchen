@@ -1,0 +1,64 @@
+<!-- package-chef/pages/order-manage/order-manage.wxml -->
+<view class="page">
+
+  <view class="warn" wx:if="{{failedCount > 0}}">
+    <text>有 {{failedCount}} 单通知发送失败，点订单右侧的「通知」看原因。</text>
+  </view>
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">📋</view>
+    <view class="state-desc">正在读订单…</view>
+  </view>
+
+  <view class="state" wx:elif="{{errMsg}}">
+    <view class="state-emoji">😵</view>
+    <view class="state-title">{{errMsg}}</view>
+    <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="load">重试</view>
+  </view>
+
+  <view class="state" wx:elif="{{orders.length === 0}}">
+    <view class="state-emoji">🍽</view>
+    <view class="state-title">还没有订单</view>
+    <view class="state-desc">等她点一次菜</view>
+  </view>
+
+  <block wx:else>
+    <view class="order card" wx:for="{{orders}}" wx:key="_id">
+      <view class="order-head">
+        <view class="row gap-12" style="min-width:0">
+          <text class="who">{{item.who}}</text>
+          <text class="count">{{item.count}} 道菜</text>
+        </view>
+        <text class="time">{{item.timeText}}</text>
+      </view>
+
+      <view class="items">
+        <view
+          class="item"
+          wx:for="{{item.items}}"
+          wx:for-item="d"
+          wx:key="dishId"
+          data-id="{{d.dishId}}"
+          bindtap="onTapItem"
+        >
+          <text class="dot">·</text>
+          <text class="name">{{d.name}}</text>
+        </view>
+      </view>
+
+      <view class="remark" wx:if="{{item.remark}}">
+        <text class="remark-label">她说</text>
+        <text>{{item.remark}}</text>
+      </view>
+      <view class="order-foot">
+        <view class="notify {{item.notifyStatus === 'failed' ? 'notify-bad' : ''}}" data-id="{{item._id}}" bindtap="onShowNotify">
+          {{item.notifyText}}
+        </view>
+        <view class="del" data-id="{{item._id}}" bindtap="onDelete">删除</view>
+      </view>
+    </view>
+
+    <view class="list-end">— 只显示最近 100 单 —</view>
+  </block>
+
+</view>

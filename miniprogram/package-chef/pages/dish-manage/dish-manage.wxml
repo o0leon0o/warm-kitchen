@@ -1,0 +1,70 @@
+<!-- package-chef/pages/dish-manage/dish-manage.wxml -->
+<view class="page">
+
+  <!-- ============ 筛选 ============ -->
+  <view class="filters">
+    <view class="filter {{filter === 'all' ? 'filter-on' : ''}}" data-filter="all" bindtap="onFilter">
+      全部 {{counts.all}}
+    </view>
+    <view class="filter {{filter === 'favorite' ? 'filter-on' : ''}}" data-filter="favorite" bindtap="onFilter">
+      她爱吃 {{counts.favorite}}
+    </view>
+    <view class="filter {{filter === 'noRecipe' ? 'filter-on' : ''}}" data-filter="noRecipe" bindtap="onFilter">
+      没写做法 {{counts.noRecipe}}
+    </view>
+  </view>
+
+  <view class="notice">
+    <text>这里只列出「上架中」的菜。想恢复一道已下架的菜：去它的编辑页把「上架」打开。</text>
+  </view>
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">🗂</view>
+    <view class="state-desc">正在读菜单…</view>
+  </view>
+
+  <view class="state" wx:elif="{{errMsg}}">
+    <view class="state-emoji">😵</view>
+    <view class="state-title">{{errMsg}}</view>
+    <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="load">重试</view>
+  </view>
+
+  <view class="state" wx:elif="{{filtered.length === 0}}">
+    <view class="state-emoji">🍽</view>
+    <view class="state-title">这里没有菜</view>
+    <view class="btn btn-primary mt-24" style="width:280rpx" bindtap="onAdd">加一道</view>
+  </view>
+
+  <block wx:else>
+    <view class="item card" wx:for="{{filtered}}" wx:key="_id">
+      <view class="item-top">
+        <view class="item-main">
+          <view class="row gap-8">
+            <text class="item-name ellipsis">{{item.name}}</text>
+            <text class="heart" wx:if="{{item.herFavorite}}">❤</text>
+          </view>
+          <view class="item-meta">
+            <text>{{item.categoryIcon}} {{item.categoryName}}</text>
+            <text wx:if="{{item.hasRecipe}}">· {{item.stepCount}} 步</text>
+            <text wx:else>· 没写做法</text>
+            <text wx:if="{{item.cookCount > 0}}">· 做过 {{item.cookCount}} 次</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="item-actions">
+        <view class="act" bindtap="onToggleFavorite" data-id="{{item._id}}">
+          {{item.herFavorite ? '取消 ♥' : '标 ♥'}}
+        </view>
+        <view class="act" bindtap="onEdit" data-id="{{item._id}}">编辑</view>
+        <view class="act" bindtap="onCook" data-id="{{item._id}}">做菜</view>
+        <view class="act" bindtap="onOffline" data-id="{{item._id}}">下架</view>
+        <view class="act act-del" bindtap="onDelete" data-id="{{item._id}}">删除</view>
+      </view>
+    </view>
+
+    <view class="add-btn safe-bottom" bindtap="onAdd">+ 加一道新菜</view>
+    <view style="height:150rpx"></view>
+  </block>
+
+</view>

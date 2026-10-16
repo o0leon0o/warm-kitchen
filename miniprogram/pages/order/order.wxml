@@ -1,0 +1,253 @@
+<!-- pages/order/order.wxml —— 点菜页 -->
+<view class="page">
+
+  <!-- ============ 顶部问候 ============ -->
+  <view class="hero">
+    <view class="hero-title">今天想吃点什么？</view>
+    <view class="hero-sub">点好了我马上去做 · {{herName}}</view>
+  </view>
+
+  <!-- ============ 搜索框（菜单超过 20 道后，它比分类更常用）============ -->
+  <view class="search-wrap" wx:if="{{!loading && categories.length > 0}}">
+    <view class="search">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        value="{{keyword}}"
+        placeholder="搜菜名，比如「鸡」「汤」"
+        placeholder-class="search-ph"
+        confirm-type="search"
+        bindinput="onSearchInput"
+      />
+      <view class="search-clear" wx:if="{{keyword}}" bindtap="onClearSearch">✕</view>
+    </view>
+  </view>
+
+  <!-- ============ 搜索模式：结果是一列平铺（不分分类）============ -->
+  <block wx:if="{{searching}}">
+    <view class="search-tip">
+      <text>{{searchResults.length}} 个结果</text>
+      <text class="search-tip-cancel" bindtap="onClearSearch">取消搜索</text>
+    </view>
+
+    <view class="list">
+      <view
+        wx:for="{{searchResults}}"
+        wx:key="_id"
+        class="dish {{item.selected ? 'dish-on' : ''}}"
+        bindtap="onTapDish"
+        bindlongpress="onLongPressDish"
+        data-dish="{{item}}"
+      >
+        <view class="dish-check">
+          <view class="check-dot {{item.selected ? 'check-on' : ''}}">
+            <text wx:if="{{item.selected}}">✓</text>
+          </view>
+        </view>
+        <view class="dish-main">
+          <view class="dish-name-row">
+            <text class="dish-name">{{item.name}}</text>
+            <text class="heart" wx:if="{{item.herFavorite}}">❤</text>
+          </view>
+          <view class="dish-intro" wx:if="{{item.intro}}">{{item.intro}}</view>
+          <view class="dish-tags">
+            <text class="tag tag-cat">{{item.categoryIcon}} {{item.categoryName}}</text>
+            <text class="tag" wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this">{{t}}</text>
+          </view>
+        </view>
+        <view class="dish-more" catchtap="onOpenDetail" data-dish="{{item}}">
+          <text>做法</text>
+        </view>
+      </view>
+
+      <view class="state" wx:if="{{searchResults.length === 0}}">
+        <view class="state-emoji">🔍</view>
+        <view class="state-title">没找到「{{keyword}}」</view>
+        <view class="state-desc">换个词试试，或者去管理页把这道菜加进去</view>
+      </view>
+    </view>
+  </block>
+
+  <!-- ============ 正常模式 ============ -->
+  <block wx:else>
+
+    <!-- 一级分类 -->
+    <view
+      class="cats {{catsScrollable ? 'cats-scroll' : 'cats-even'}}"
+      wx:if="{{!loading && categories.length > 0}}"
+    >
+      <scroll-view wx:if="{{catsScrollable}}" scroll-x="{{true}}" class="cats-scrollview">
+        <view
+          wx:for="{{categories}}"
+          wx:key="key"
+          class="cat {{item.key === activeKey ? 'cat-on' : ''}}"
+          bindtap="onSwitchCategory"
+          data-key="{{item.key}}"
+        >
+          <text class="cat-icon">{{item.icon}}</text>
+          <text class="cat-name">{{item.name}}</text>
+          <text class="cat-count">{{item.count}}</text>
+        </view>
+      </scroll-view>
+
+      <block wx:else>
+        <view
+          wx:for="{{categories}}"
+          wx:key="key"
+          class="cat cat-flex {{item.key === activeKey ? 'cat-on' : ''}}"
+          bindtap="onSwitchCategory"
+          data-key="{{item.key}}"
+        >
+          <text class="cat-icon">{{item.icon}}</text>
+          <text class="cat-name">{{item.name}}</text>
+          <text class="cat-count">{{item.count}}</text>
+        </view>
+      </block>
+    </view>
+
+    <!-- 主菜二级筛选（只在当前分类真的有多种肉时出现） -->
+    <view class="subs" wx:if="{{hasSub && !loading}}">
+      <view
+        class="sub {{activeSub === '' ? 'sub-on' : ''}}"
+        bindtap="onSwitchSub"
+        data-key=""
+      >全部</view>
+      <view
+        wx:for="{{subCategories}}"
+        wx:key="key"
+        class="sub {{activeSub === item.key ? 'sub-on' : ''}}"
+        bindtap="onSwitchSub"
+        data-key="{{item.key}}"
+      >
+        <text class="sub-icon">{{item.icon}}</text>
+        <text>{{item.name}}</text>
+        <text class="sub-count">{{item.count}}</text>
+      </view>
+    </view>
+
+    <!-- 加载中 -->
+    <view class="state" wx:if="{{loading}}">
+      <view class="state-emoji">🍳</view>
+      <view class="state-desc">正在打开菜单…</view>
+    </view>
+
+    <!-- 出错 -->
+    <view class="state" wx:elif="{{errMsg}}">
+      <view class="state-emoji">😵</view>
+      <view class="state-title">菜单打不开了</view>
+      <view class="state-desc">{{errMsg}}</view>
+      <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="loadMenu">重新加载</view>
+    </view>
+
+    <!-- 空菜单 -->
+    <view class="state" wx:elif="{{categories.length === 0}}">
+      <view class="state-emoji">🥣</view>
+      <view class="state-title">{{copy.emptyMenuText}}</view>
+      <block wx:if="{{debugTotal === 0}}">
+        <view class="state-desc">服务端返回 0 道菜 —— 菜单里确实还没有菜</view>
+        <view class="state-desc">去「我的」连点标题 5 次 → 设置 → 灌入预置菜品</view>
+      </block>
+      <block wx:else>
+        <view class="state-desc">服务端返回了 {{debugTotal}} 道菜，但一道都没显示出来</view>
+        <view class="state-desc">说明分类配置对不上（这是 bug，请告诉 AI）</view>
+      </block>
+      <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="loadMenu">重新加载</view>
+    </view>
+
+    <!-- 这个二级筛选下没有菜 -->
+    <view class="state" wx:elif="{{currentDishes.length === 0}}">
+      <view class="state-emoji">🍽</view>
+      <view class="state-title">这一栏还没有菜</view>
+      <view class="state-desc">换个筛选条件，或者去管理页加一道</view>
+    </view>
+
+    <!-- 菜品列表 -->
+    <view class="list" wx:else>
+      <view
+        wx:for="{{currentDishes}}"
+        wx:key="_id"
+        class="dish {{item.selected ? 'dish-on' : ''}}"
+        bindtap="onTapDish"
+        bindlongpress="onLongPressDish"
+        data-dish="{{item}}"
+      >
+        <view class="dish-check">
+          <view class="check-dot {{item.selected ? 'check-on' : ''}}">
+            <text wx:if="{{item.selected}}">✓</text>
+          </view>
+        </view>
+
+        <view class="dish-main">
+          <view class="dish-name-row">
+            <text class="dish-name">{{item.name}}</text>
+            <text class="heart" wx:if="{{item.herFavorite}}">❤</text>
+          </view>
+          <view class="dish-intro" wx:if="{{item.intro}}">{{item.intro}}</view>
+          <view class="dish-tags">
+            <text class="tag" wx:for="{{item.tags}}" wx:for-item="t" wx:key="*this">{{t}}</text>
+            <text class="tag tag-primary" wx:if="{{item.hasRecipe}}">有做法</text>
+            <text class="tag" wx:if="{{item.cookCount > 0}}">做过 {{item.cookCount}} 次</text>
+          </view>
+        </view>
+
+        <view class="dish-more" catchtap="onOpenDetail" data-dish="{{item}}">
+          <text>做法</text>
+        </view>
+      </view>
+
+      <view class="list-end">— 长按卡片也能看做法 —</view>
+    </view>
+
+  </block>
+
+  <!-- ============ 底部购物车浮条 ============ -->  <view class="cart-bar {{cartCount > 0 ? 'cart-bar-on' : ''}} safe-bottom" wx:if="{{!cartOpen}}">
+    <view class="cart-left" bindtap="openCart">
+      <view class="cart-badge">{{cartCount}}</view>
+      <text class="cart-text">{{cartCount > 0 ? '看看点了什么' : '还没选菜哦'}}</text>
+    </view>
+    <view
+      class="cart-submit {{cartCount === 0 || submitting ? 'btn-disabled' : ''}}"
+      bindtap="onSubmit"
+    >{{submitting ? '提交中…' : copy.orderButton}}</view>
+  </view>
+
+  <!-- ============ 购物车半屏列表 ============ -->
+  <view class="mask" wx:if="{{cartOpen}}" bindtap="closeCart"></view>
+  <view class="sheet safe-bottom" wx:if="{{cartOpen}}" catchtap="noop">
+    <view class="sheet-head">
+      <text class="sheet-title">今晚的菜单</text>
+      <text class="sheet-count">{{cartCount}} 道菜</text>
+    </view>
+
+    <scroll-view class="sheet-list" scroll-y="{{true}}">
+      <view class="sheet-item" wx:for="{{cartItems}}" wx:key="dishId">
+        <text class="sheet-item-name">{{item.name}}</text>
+        <view class="sheet-item-del" catchtap="onRemoveFromCart" data-id="{{item.dishId}}">
+          <text>删掉</text>
+        </view>
+      </view>
+      <view class="sheet-empty" wx:if="{{cartCount === 0}}">购物车空啦</view>
+    </scroll-view>
+
+    <view class="sheet-remark">
+      <textarea
+        class="remark-input"
+        value="{{remark}}"
+        placeholder="{{copy.remarkPlaceholder}}"
+        placeholder-class="remark-ph"
+        maxlength="100"
+        auto-height="{{true}}"
+        bindinput="onRemarkInput"
+      />
+    </view>
+
+    <view class="sheet-actions">
+      <view class="btn btn-plain" style="flex:0 0 200rpx" bindtap="closeCart">继续加菜</view>
+      <view
+        class="btn btn-primary flex-1 {{submitting ? 'btn-disabled' : ''}}"
+        bindtap="onSubmit"
+      >{{submitting ? '提交中…' : copy.orderButton}}</view>
+    </view>
+  </view>
+
+</view>

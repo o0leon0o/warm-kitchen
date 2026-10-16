@@ -1,0 +1,219 @@
+<!-- package-chef/pages/settings/settings.wxml -->
+<view class="page">
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">⚙️</view>
+    <view class="state-desc">正在读取设置…</view>
+  </view>
+
+  <block wx:else>
+
+    <!-- ============ 身份 ============ -->
+    <view class="card">
+      <view class="sec-title">身份</view>
+      <view class="kv">
+        <text class="k">你现在是</text>
+        <text class="v">{{role === 'me' ? meName + '（大厨）' : role === 'her' ? herName + '（点菜）' : '访客'}}</text>
+      </view>
+      <view class="row between entry" bindtap="onSwapIdentity">
+        <text>交换你俩的身份</text>
+        <text class="arrow">▸</text>
+      </view>
+      <view class="hint">只有当「她比你更早打开小程序」时才需要交换。</view>
+    </view>
+
+    <!-- ============ 文案 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">界面文案（改完她下拉刷新就能看到）</view>
+
+      <view class="field" wx:for="{{copyFields}}" wx:key="key">
+        <text class="label">{{item.label}}</text>
+        <input
+          class="input"
+          value="{{ui[item.key]}}"
+          placeholder="{{item.hint}}"
+          placeholder-class="ph"
+          data-key="{{item.key}}"
+          bindinput="onCopyInput"
+        />
+      </view>
+
+      <view class="btn btn-primary mt-16" bindtap="onSaveCopy">保存文案</view>
+    </view>
+
+    <!-- ============ 昵称 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">她的昵称</view>
+      <input class="input" value="{{herName}}" placeholder="比如 宝宝" placeholder-class="ph" bindinput="onHerNameInput" />
+      <view class="hint">
+        会用在点菜页的问候语、庆祝页和群消息里（比如"宝宝 点了 2 道菜"）。
+        改完她下拉刷新就能看到。
+      </view>
+      <view class="btn btn-primary mt-16" bindtap="onSaveNames">保存昵称</view>
+    </view>
+
+    <!-- ============ 通知 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">点菜通知（企业微信群机器人）</view>
+
+      <view class="kv">
+        <text class="k">当前地址</text>
+        <text class="v small">{{webhookMasked || '还没填'}}</text>
+      </view>
+
+      <view class="field">
+        <text class="label">粘贴新的 webhook 地址</text>
+        <input
+          class="input"
+          value="{{webhookInput}}"
+          placeholder="https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=..."
+          placeholder-class="ph"
+          bindinput="onWebhookInput"
+        />
+      </view>
+
+      <view class="row gap-16 mt-16">
+        <view class="btn btn-primary flex-1 {{testing ? 'btn-disabled' : ''}}" bindtap="onTestNotify">
+          {{testing ? '发送中…' : '发条测试消息'}}
+        </view>
+      </view>
+      <view class="hint">测试通过会自动保存地址，不用再点别的。</view>
+
+      <view class="switch-row">
+        <view>
+          <text class="switch-label">启用通知</text>
+          <text class="switch-hint">关掉之后订单照常成立，只是群里不响</text>
+        </view>
+        <switch checked="{{notifyEnabled}}" color="#F76B8A" bindchange="onToggleNotifyEnabled" />
+      </view>
+    </view>
+
+    <!-- ============ 分类 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">菜单分类</view>
+
+      <view class="cat-row" wx:for="{{categories}}" wx:key="key">
+        <input
+          class="input cat-icon"
+          style="width:100rpx;text-align:center"
+          value="{{item.icon}}"
+          data-index="{{index}}"
+          bindinput="onCategoryIconInput"
+        />
+        <input
+          class="input flex-1"
+          value="{{item.name}}"
+          placeholder="分类名"
+          placeholder-class="ph"
+          data-index="{{index}}"
+          bindinput="onCategoryNameInput"
+        />
+        <switch
+          checked="{{item.enabled}}"
+          color="#F76B8A"
+          data-index="{{index}}"
+          bindchange="onToggleCategoryEnabled"
+        />
+        <view class="del-btn" data-index="{{index}}" bindtap="onRemoveCategory">✕</view>
+      </view>
+
+      <view class="cat-row">
+        <input
+          class="input flex-1"
+          value="{{newCategoryName}}"
+          placeholder="新增分类，比如「夜宵」"
+          placeholder-class="ph"
+          bindinput="onNewCategoryInput"
+        />
+        <view class="mini-btn" bindtap="onAddCategory">加</view>
+      </view>
+
+      <view class="btn btn-primary mt-16" bindtap="onSaveCategories">保存分类</view>
+    </view>
+
+    <!-- ============ 主菜二级筛选 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">主菜细分</view>
+      <view class="hint" style="margin-top:0">
+        主菜会越加越多。这一行是用来在点菜页"再滤一下"的（猪肉 / 牛肉 / …），
+        不是二级分类 —— 改名字不影响已经存好的菜。
+      </view>
+
+      <view class="cat-row" wx:for="{{subCategories}}" wx:key="key" style="margin-top:16rpx">
+        <input
+          class="input cat-icon"
+          style="width:100rpx;text-align:center"
+          value="{{item.icon}}"
+          data-index="{{index}}"
+          bindinput="onSubIconInput"
+        />
+        <input
+          class="input flex-1"
+          value="{{item.name}}"
+          placeholder="细分名"
+          placeholder-class="ph"
+          data-index="{{index}}"
+          bindinput="onSubNameInput"
+        />
+        <view class="del-btn" data-index="{{index}}" bindtap="onRemoveSub">✕</view>
+      </view>
+
+      <view class="cat-row">
+        <input
+          class="input flex-1"
+          value="{{newSubName}}"
+          placeholder="新增细分，比如「羊肉」"
+          placeholder-class="ph"
+          bindinput="onNewSubInput"
+        />
+        <view class="mini-btn" bindtap="onAddSub">加</view>
+      </view>
+
+      <view class="btn btn-primary mt-16" bindtap="onSaveCategories">保存分类</view>
+    </view>
+
+    <!-- ============ 旧数据迁移 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">修正分类数据</view>
+      <view class="row between entry" bindtap="onMigrate">
+        <text>把旧分类的菜改到新分类</text>
+        <text class="arrow">▸</text>
+      </view>
+      <view class="hint">
+        如果你之前灌过旧版预置菜品（那时分类叫「家里做」），点这里把它们改到
+        主菜 / 素菜 / …，并给主菜猜一个细分。会先给你看一遍要改什么。
+      </view>
+    </view>
+
+    <!-- ============ 数据 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">预置菜品</view>
+
+      <view class="row between entry" bindtap="onInitData">
+        <text>补齐预置菜品（只补缺的）</text>
+        <text class="arrow">▸</text>
+      </view>
+      <view class="hint">
+        会把这 24 道预置家常菜（含菜谱）里**你还没有的**补进菜单。
+        同名的不会动，你改过的也不会被覆盖 —— 可以放心多点几次。
+      </view>
+
+      <view class="row between entry" bindtap="onResetSeed" style="margin-top:16rpx">
+        <text class="t-danger">清空菜单并重新灌一遍</text>
+        <text class="arrow">▸</text>
+      </view>
+      <view class="hint">
+        ⚠️ 会删掉菜单里**全部**菜品（包括你自己加的），然后重新灌 24 道。找不回来。
+        只在"菜单全是预设、我打算重来"的时候用。
+      </view>
+    </view>
+
+    <view class="foot">
+      <text>小厨房 · 她点菜，我们一起做</text>
+    </view>
+
+    <view style="height:60rpx"></view>
+
+  </block>
+
+</view>

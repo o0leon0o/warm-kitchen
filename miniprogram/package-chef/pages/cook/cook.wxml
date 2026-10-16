@@ -1,0 +1,115 @@
+<!-- package-chef/pages/cook/cook.wxml —— 做菜模式 -->
+<view class="page">
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">🔥</view>
+    <view class="state-desc">准备开火…</view>
+  </view>
+
+  <view class="state" wx:elif="{{errMsg}}">
+    <view class="state-emoji">😵</view>
+    <view class="state-title">{{errMsg}}</view>
+    <view class="btn btn-ghost mt-24" style="width:280rpx" bindtap="load">重试</view>
+  </view>
+
+  <view class="state" wx:elif="{{total === 0}}">
+    <view class="state-emoji">📝</view>
+    <view class="state-title">这道菜还没有写步骤</view>
+    <view class="state-desc">先去编辑菜谱，把做法记下来</view>
+  </view>
+
+  <block wx:else>
+
+    <!-- ============ 顶栏：进度 + 视图切换 ============ -->
+    <view class="topbar">
+      <view class="topbar-left">
+        <text class="dish-name">{{dish.name}}</text>
+        <text class="progress">{{progressText}} 步已做</text>
+      </view>
+      <view class="seg">
+        <view class="seg-item {{view === 'list' ? 'seg-on' : ''}}" data-view="list" bindtap="onSwitchView">清单</view>
+        <view class="seg-item {{view === 'step' ? 'seg-on' : ''}}" data-view="step" bindtap="onSwitchView">一步一屏</view>
+      </view>
+    </view>
+
+    <!-- ============ 配料（可折叠） ============ -->
+    <view class="ing-card" bindtap="toggleIngredients">
+      <view class="row between">
+        <text class="ing-title">配料 {{ingredients.length}} 样</text>
+        <text class="ing-toggle">{{ingredientsOpen ? '收起 ▴' : '展开 ▾'}}</text>
+      </view>
+      <view class="ing-list" wx:if="{{ingredientsOpen}}">
+        <view class="ing-row" wx:for="{{ingredients}}" wx:key="name">
+          <text>{{item.name}}</text>
+          <text class="ing-amount">{{item.amount}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="avoid" wx:if="{{dish.avoid.length > 0}}">注意：{{dish.avoid}}</view>
+
+    <!-- ============ 视图 A：一屏清单 ============ -->
+    <block wx:if="{{view === 'list'}}">
+      <view
+        class="step-item {{item.done ? 'step-done' : ''}}"
+        wx:for="{{steps}}"
+        wx:key="order"
+        bindtap="onToggleStep"
+        data-order="{{item.order}}"
+      >
+        <view class="step-check {{item.done ? 'on' : ''}}">
+          <text wx:if="{{item.done}}">✓</text>
+        </view>
+        <view class="step-content">
+          <text class="step-text">{{item.text}}</text>
+          <image wx:if="{{item.image}}" class="step-img" src="{{item.image}}" mode="widthFix" lazy-load="{{true}}" />
+        </view>
+      </view>
+
+      <view class="tips" wx:if="{{dish.recipe.tips.length > 0}}">
+        <view class="tips-title">小贴士</view>
+        <view class="tip" wx:for="{{dish.recipe.tips}}" wx:key="*this">· {{item}}</view>
+      </view>
+    </block>
+
+    <!-- ============ 视图 B：一步一屏 ============ -->
+    <block wx:else>
+      <view class="big">
+        <view class="big-no">第 {{current}} 步 / 共 {{total}} 步</view>
+        <view class="big-text">{{currentStep.text}}</view>
+        <image wx:if="{{currentStep.image}}" class="big-img" src="{{currentStep.image}}" mode="widthFix" />
+
+        <view class="big-actions">
+          <view class="big-btn {{currentStep.done ? 'big-btn-done' : ''}}" bindtap="onToggleStep" data-order="{{currentStep.order}}">
+            {{currentStep.done ? '已做完 ✓（点一下取消）' : '这一步做完了'}}
+          </view>
+        </view>
+
+        <view class="big-nav">
+          <view class="nav-btn {{current <= 1 ? 'nav-off' : ''}}" bindtap="onPrev">← 上一步</view>
+          <view class="nav-btn {{current >= total ? 'nav-off' : ''}}" bindtap="onNext">下一步 →</view>
+        </view>
+
+        <!-- 步骤小圆点，能一键跳 -->
+        <view class="dots">
+          <view
+            class="dot {{item.done ? 'dot-done' : ''}} {{item.order === current ? 'dot-cur' : ''}}"
+            wx:for="{{steps}}"
+            wx:key="order"
+            data-order="{{item.order}}"
+            bindtap="onToggleStep"
+          >{{item.order}}</view>
+        </view>
+      </view>
+    </block>
+
+    <!-- ============ 底部工具 ============ -->
+    <view class="footer safe-bottom">
+      <view class="foot-btn" wx:if="{{dish.recipe.sourceUrl}}" bindtap="onOpenSource">复制攻略链接</view>
+      <view class="foot-btn" bindtap="onGoNote">记一笔（复盘）</view>
+      <view class="foot-btn" bindtap="onResetAll">全部重来</view>
+    </view>
+
+  </block>
+
+</view>

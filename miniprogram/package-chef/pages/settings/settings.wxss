@@ -1,0 +1,111 @@
+/* package-chef/pages/settings/settings.wxss */
+
+.page { padding: 24rpx 24rpx 60rpx; }
+
+.sec-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+  display: flex;
+  align-items: center;
+}
+.sec-title::before {
+  content: '';
+  width: 8rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  background: var(--c-primary);
+  margin-right: 12rpx;
+}
+
+.field { margin-bottom: 20rpx; }
+.label {
+  display: block;
+  font-size: 24rpx;
+  color: var(--c-text-sub);
+  margin-bottom: 10rpx;
+}
+
+.input {
+  height: 80rpx;
+  background: #F8F6F7;
+  border-radius: var(--r-md);
+  padding: 0 22rpx;
+  font-size: 27rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+.ph { color: #BBB3B6; font-size: 25rpx; }
+
+.kv {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16rpx;
+  padding: 12rpx 0 18rpx;
+}
+.k { font-size: 25rpx; color: var(--c-text-sub); flex: 0 0 auto; }
+.v { font-size: 26rpx; text-align: right; }
+.v.small { font-size: 21rpx; color: var(--c-text-light); word-break: break-all; }
+
+.entry {
+  padding: 26rpx 4rpx 10rpx;
+  font-size: 28rpx;
+  border-top: 1rpx solid #F7F3F5;
+}
+.entry:active { opacity: .6; }
+.arrow { color: var(--c-text-light); font-size: 26rpx; }
+
+.hint {
+  margin-top: 12rpx;
+  font-size: 22rpx;
+  color: var(--c-text-light);
+  line-height: 1.6;
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0 0;
+  margin-top: 20rpx;
+  border-top: 1rpx solid #F7F3F5;
+}
+.switch-label { font-size: 28rpx; display: block; }
+.switch-hint { font-size: 22rpx; color: var(--c-text-light); }
+
+/* 分类行 */
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin-bottom: 16rpx;
+}
+.cat-icon { flex: 0 0 auto; }
+.del-btn {
+  flex: 0 0 auto;
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  background: #FDF0F2;
+  color: var(--c-danger);
+  font-size: 26rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mini-btn {
+  padding: 16rpx 28rpx;
+  border-radius: var(--r-full);
+  background: var(--c-primary-light);
+  color: var(--c-primary);
+  font-size: 25rpx;
+  flex: 0 0 auto;
+}
+
+.foot {
+  margin-top: 60rpx;
+  text-align: center;
+  font-size: 22rpx;
+  color: var(--c-text-light);
+}

@@ -1,0 +1,275 @@
+<!-- package-chef/pages/dish-edit/dish-edit.wxml —— 新增/编辑菜品 -->
+
+<view class="page">
+
+  <view class="state" wx:if="{{loading}}">
+    <view class="state-emoji">📖</view>
+    <view class="state-desc">正在打开…</view>
+  </view>
+
+  <block wx:else>
+
+    <!-- ============ 基础信息 ============ -->
+    <view class="card">
+      <view class="sec-title">这道菜是什么</view>
+
+      <view class="field">
+        <text class="label">菜名 <text class="req">*</text></text>
+        <input
+          class="input"
+          value="{{form.name}}"
+          placeholder="比如 可乐鸡翅"
+          placeholder-class="ph"
+          maxlength="20"
+          data-field="name"
+          bindinput="onInput"
+        />
+      </view>
+
+      <view class="field">
+        <text class="label">分类</text>
+        <picker
+          mode="selector"
+          range="{{categories}}"
+          range-key="name"
+          value="{{categoryIndex}}"
+          bindchange="onCategoryChange"
+        >
+          <view class="picker">
+            <text>{{categories[categoryIndex].icon}} {{categories[categoryIndex].name}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <!-- 主菜才有二级分类（猪肉 / 牛肉 / 鸡肉 / 鱼虾 / 其他） -->
+      <view class="field" wx:if="{{showSub}}">
+        <text class="label">主菜细分（用来在点菜页快速筛选）</text>
+        <picker
+          mode="selector"
+          range="{{subOptions}}"
+          range-key="name"
+          value="{{subIndex}}"
+          bindchange="onSubChange"
+        >
+          <view class="picker">
+            <text>{{subOptions[subIndex].name}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="field">
+        <text class="label">一句话简介</text>
+        <input
+          class="input"
+          value="{{form.intro}}"
+          placeholder="她在卡片上看到的那句话"
+          placeholder-class="ph"
+          maxlength="60"
+          data-field="intro"
+          bindinput="onInput"
+        />
+      </view>
+
+      <view class="field">
+        <text class="label">辣度</text>
+        <picker mode="selector" range="{{spicyOptions}}" value="{{form.spicy}}" bindchange="onSpicyChange">
+          <view class="picker">
+            <text>{{spicyOptions[form.spicy]}}</text>
+            <text class="picker-arrow">▾</text>
+          </view>
+        </picker>
+      </view>
+
+      <view class="switches">
+        <view class="switch-row">
+          <view>
+            <text class="switch-label">她爱吃 ♥</text>
+            <text class="switch-hint">打开后会排在菜单最前面</text>
+          </view>
+          <switch
+            checked="{{form.herFavorite}}"
+            color="#F76B8A"
+            data-field="herFavorite"
+            bindchange="onSwitch"
+          />
+        </view>
+
+        <view class="switch-row">
+          <view>
+            <text class="switch-label">在菜单里上架</text>
+            <text class="switch-hint">关掉她就看不到了（但数据还在）</text>
+          </view>
+          <switch
+            checked="{{form.enabled}}"
+            color="#F76B8A"
+            data-field="enabled"
+            bindchange="onSwitch"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- ============ 标签 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">标签（点一下选中）</view>
+      <view class="chips">
+        <view
+          class="chip {{item.on ? 'chip-on' : ''}}"
+          wx:for="{{tagSuggestions}}"
+          wx:key="name"
+          data-tag="{{item.name}}"
+          bindtap="onTapTag"
+        >{{item.name}}</view>
+      </view>
+
+      <view class="sec-title mt-24">忌口提醒（她不能吃的）</view>
+      <view class="chips">
+        <view
+          class="chip chip-warn {{item.on ? 'chip-warn-on' : ''}}"
+          wx:for="{{avoidSuggestions}}"
+          wx:key="name"
+          data-tag="{{item.name}}"
+          bindtap="onTapAvoid"
+        >{{item.name}}</view>
+      </view>
+    </view>
+
+    <!-- ============ 配料 ============ -->
+    <view class="card mt-24">
+      <view class="row between">
+        <view class="sec-title" style="margin-bottom:0">配料</view>
+        <view class="mini-btn" bindtap="addIngredient">+ 加一行</view>
+      </view>
+
+      <view class="ing-row" wx:for="{{form.recipe.ingredients}}" wx:key="index">
+        <input
+          class="input input-sm flex-1"
+          value="{{item.name}}"
+          placeholder="食材"
+          placeholder-class="ph"
+          data-index="{{index}}"
+          data-field="name"
+          bindinput="onIngredientInput"
+        />
+        <input
+          class="input input-sm"
+          style="width:200rpx"
+          value="{{item.amount}}"
+          placeholder="用量"
+          placeholder-class="ph"
+          data-index="{{index}}"
+          data-field="amount"
+          bindinput="onIngredientInput"
+        />
+        <view class="del-btn" data-index="{{index}}" bindtap="removeIngredient">✕</view>
+      </view>
+    </view>
+
+    <!-- ============ 步骤 ============ -->
+    <view class="card mt-24">
+      <view class="row between">
+        <view class="sec-title" style="margin-bottom:0">怎么做（步骤）</view>
+        <view class="mini-btn" bindtap="onPasteSteps">粘贴整段</view>
+      </view>
+
+      <view class="step-row" wx:for="{{form.recipe.steps}}" wx:key="index">
+        <view class="step-no">{{index + 1}}</view>
+        <textarea
+          class="step-input"
+          value="{{item.text}}"
+          placeholder="这一步做什么"
+          placeholder-class="ph"
+          auto-height="{{true}}"
+          maxlength="300"
+          data-index="{{index}}"
+          bindinput="onStepInput"
+        />
+        <view class="step-tools">
+          <view class="tool" data-index="{{index}}" data-dir="up" bindtap="moveStep">↑</view>
+          <view class="tool" data-index="{{index}}" data-dir="down" bindtap="moveStep">↓</view>
+          <view class="tool tool-del" data-index="{{index}}" bindtap="removeStep">✕</view>
+        </view>
+      </view>
+
+      <view class="mini-btn wide mt-16" bindtap="addStep">+ 加一步</view>
+    </view>
+
+    <!-- ============ 小贴士 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">小贴士</view>
+      <view class="tip-row" wx:for="{{form.recipe.tips}}" wx:key="index">
+        <text class="tip-text flex-1">{{item}}</text>
+        <view class="del-btn" data-index="{{index}}" bindtap="removeTip">✕</view>
+      </view>
+      <view class="ing-row">
+        <input
+          class="input input-sm flex-1"
+          value="{{newTip}}"
+          placeholder="比如 一定要收汁到浓稠"
+          placeholder-class="ph"
+          bindinput="onNewTipInput"
+        />
+        <view class="mini-btn" bindtap="addTip">加</view>
+      </view>
+    </view>
+
+    <!-- ============ 攻略链接 ============ -->
+    <view class="card mt-24">
+      <view class="sec-title">攻略来源（你抄的那个教程）</view>
+      <view class="field">
+        <text class="label">链接</text>
+        <input
+          class="input"
+          value="{{form.recipe.sourceUrl}}"
+          placeholder="https://..."
+          placeholder-class="ph"
+          data-field="sourceUrl"
+          bindinput="onRecipeInput"
+        />
+      </view>
+      <view class="field">
+        <text class="label">标题（可选）</text>
+        <input
+          class="input"
+          value="{{form.recipe.sourceTitle}}"
+          placeholder="比如 下厨房 · 可乐鸡翅"
+          placeholder-class="ph"
+          data-field="sourceTitle"
+          bindinput="onRecipeInput"
+        />
+      </view>
+    </view>
+
+    <!-- ============ 复盘笔记 ============ -->
+    <view class="card mt-24 {{focusField === 'note' ? 'card-focus' : ''}}">
+      <view class="sec-title">我的复盘（只有你能看到）</view>
+      <textarea
+        class="textarea"
+        value="{{form.recipe.note}}"
+        placeholder="这次火大了 / 糖放多了，下次减半 / 焯水多煮两分钟"
+        placeholder-class="ph"
+        auto-height="{{true}}"
+        maxlength="500"
+        data-field="note"
+        bindinput="onRecipeInput"
+      />
+      <view class="hint">这段内容不会出现在她的手机上。</view>
+    </view>
+
+    <view style="height:180rpx"></view>
+
+    <!-- ============ 底部保存 ============ -->
+    <view class="bar safe-bottom">
+      <view class="btn btn-plain" style="flex:0 0 220rpx" bindtap="onToggleEnabled" wx:if="{{!isNew}}">
+        {{form.enabled ? '下架' : '上架'}}
+      </view>
+      <view class="btn btn-primary flex-1 {{saving ? 'btn-disabled' : ''}}" bindtap="onSave">
+        {{saving ? '保存中…' : (isNew ? '加进菜单' : '保存修改')}}
+      </view>
+    </view>
+
+  </block>
+
+</view>

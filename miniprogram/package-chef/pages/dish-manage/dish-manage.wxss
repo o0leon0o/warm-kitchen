@@ -1,0 +1,68 @@
+/* package-chef/pages/dish-manage/dish-manage.wxss */
+
+.page { padding: 24rpx 24rpx 40rpx; }
+
+.filters { display: flex; gap: 14rpx; }
+.filter {
+  padding: 12rpx 26rpx;
+  border-radius: var(--r-full);
+  background: #FFFFFF;
+  font-size: 24rpx;
+  color: var(--c-text-sub);
+  box-shadow: var(--shadow-card);
+}
+.filter-on { background: var(--c-primary); color: #FFFFFF; }
+
+.notice {
+  margin-top: 20rpx;
+  padding: 16rpx 20rpx;
+  background: #F3F6FA;
+  border-radius: var(--r-md);
+  font-size: 22rpx;
+  color: #5A7089;
+  line-height: 1.6;
+}
+
+.item { margin-top: 20rpx; }
+.item-name { font-size: 31rpx; font-weight: 600; }
+.heart { color: var(--c-primary); font-size: 24rpx; }
+.item-meta {
+  margin-top: 8rpx;
+  display: flex;
+  gap: 10rpx;
+  flex-wrap: wrap;
+  font-size: 22rpx;
+  color: var(--c-text-light);
+}
+
+.item-actions {
+  margin-top: 20rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+.act {
+  padding: 12rpx 28rpx;
+  border-radius: var(--r-full);
+  background: #F5F2F3;
+  color: var(--c-text-sub);
+  font-size: 24rpx;
+}
+.act:active { opacity: .7; }
+.act-del { background: #FDF0F2; color: var(--c-danger); margin-left: auto; }
+
+.add-btn {
+  position: fixed;
+  left: 24rpx; right: 24rpx; bottom: 24rpx;
+  height: 96rpx;
+  border-radius: var(--r-full);
+  background: var(--c-primary);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 30rpx rgba(247,107,138,.3);
+  z-index: 20;
+}

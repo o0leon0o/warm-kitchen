@@ -1,0 +1,104 @@
+/* package-chef/pages/recipes/recipes.wxss */
+
+.page { padding: 24rpx 24rpx 40rpx; }
+
+/* ============ 统计 ============ */
+.stats {
+  display: flex;
+  background: #FFFFFF;
+  border-radius: var(--r-lg);
+  padding: 26rpx 0;
+  box-shadow: var(--shadow-card);
+}
+.stat { flex: 1; display: flex; flex-direction: column; align-items: center; }
+.stat-num { font-size: 42rpx; font-weight: 600; color: var(--c-primary); }
+.stat-label { margin-top: 4rpx; font-size: 22rpx; color: var(--c-text-sub); }
+
+/* ============ 工具栏 ============ */
+.toolbar { margin-top: 22rpx; }
+.search {
+  height: 76rpx;
+  background: #FFFFFF;
+  border-radius: var(--r-full);
+  padding: 0 30rpx;
+  font-size: 27rpx;
+  box-shadow: var(--shadow-card);
+}
+.search-ph { color: #BBB3B6; }
+
+.sorts {
+  display: flex;
+  gap: 14rpx;
+  margin-top: 18rpx;
+}
+.sort {
+  padding: 10rpx 26rpx;
+  border-radius: var(--r-full);
+  background: #FFFFFF;
+  font-size: 24rpx;
+  color: var(--c-text-sub);
+}
+.sort-on { background: var(--c-primary); color: #FFFFFF; }
+
+/* ============ 菜品卡 ============ */
+.dish { margin-top: 20rpx; }
+.dish-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14rpx;
+}
+.dish-name { font-size: 32rpx; font-weight: 600; }
+.heart { color: var(--c-primary); font-size: 24rpx; flex: 0 0 auto; }
+.dish-cat { font-size: 22rpx; color: var(--c-text-light); flex: 0 0 auto; }
+
+.dish-intro {
+  margin-top: 6rpx;
+  font-size: 25rpx;
+  color: var(--c-text-sub);
+}
+.dish-meta {
+  margin-top: 14rpx;
+  display: flex;
+  gap: 20rpx;
+}
+.meta-item { font-size: 22rpx; color: var(--c-text-light); }
+
+.dish-actions {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 16rpx;
+}
+.act {
+  height: 68rpx;
+  padding: 0 36rpx;
+  border-radius: var(--r-full);
+  background: #F5F2F3;
+  color: var(--c-text-sub);
+  font-size: 25rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.act:active { opacity: .75; }
+.act-main { background: var(--c-primary-light); color: var(--c-primary); font-weight: 500; }
+
+/* ============ 底部加菜 ============ */
+.add-btn {
+  position: fixed;
+  left: 24rpx;
+  right: 24rpx;
+  bottom: 24rpx;
+  height: 96rpx;
+  border-radius: var(--r-full);
+  background: var(--c-primary);
+  color: #FFFFFF;
+  font-size: 30rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 30rpx rgba(247,107,138,.3);
+  z-index: 20;
+}
+.add-btn:active { opacity: .88; }

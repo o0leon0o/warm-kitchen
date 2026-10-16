@@ -1,0 +1,19 @@
+# ---- 依赖与构建产物 ----
+node_modules/
+miniprogram/miniprogram_npm/
+cloudfunctions/*/node_modules/
+cloudfunctions/**/node_modules/
+
+# ---- 微信开发者工具的本地文件（每台机器不一样，不要提交）----
+miniprogram/.wxcloud/
+miniprogram/.wxcloud/
+project.private.config.json
+.wxcloud/
+
+# ---- 版本快照与压缩包（体积大，单独管理）----
+_versions/
+
+# ---- 系统杂物 ----
+.DS_Store
+Thumbs.db
+*.log
