@@ -1,20 +1,52 @@
 # 小厨房 · 女朋友专属点菜小程序
 
+[![WeChat MiniProgram](https://img.shields.io/badge/WeChat-MiniProgram-07C160)](https://developers.weixin.qq.com/miniprogram/dev/framework/)
+[![CloudBase](https://img.shields.io/badge/backend-WeChat%20CloudBase-006EFF)](https://developers.weixin.qq.com/miniprogram/dev/wxcloudservice/wxcloud/basis/getting-started.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
 > 她点菜 → 你俩的企微群响一声 → 一起做 → 做菜时照着菜谱一步步来 → 做过的菜留下做法和复盘。
 
-**这不是外卖系统**：没有价格、没有支付、没有库存、没有配送。
+**这不是外卖系统**：没有价格、没有支付、没有库存、没有配送、没有订单状态 —— 因为两个人一起做饭，本来就不需要这些。
+
+| | |
+|---|---|
+| **形态** | 微信小程序（原生，零第三方组件库） |
+| **后端** | 微信云开发 CloudBase（**只有 2 个云函数**） |
+| **数据** | 3 个集合（`config` / `dishes` / `orders`）+ 本地购物车 |
+| **通知** | 企业微信群机器人 webhook |
+| **成本** | 云开发基础套餐（约 ¥20/月）；无服务器、无备案、无域名 |
 
 ---
 
-## 你能用到的四份文档
+## 功能
+
+**她的路径**：按分类浏览（主菜/素菜/汤/主食/甜品）→ 搜索 → 主菜按肉类二级筛选 → 加入购物车 → 半屏确认清单 → 提交 → 庆祝页。提交的同时，你俩的企业微信群**秒收到消息**。
+
+**厨房路径**：做菜模式（一屏清单 ⇄ 一步一屏、大字大按钮、屏幕常亮、步骤勾选状态两人共享）→ 复盘笔记（只有大厨看得到）。
+
+**管理路径**（连点「我的」标题 5 次解锁）：菜品与菜谱编辑（增删步骤、上下调序、粘贴整段自动拆步）、上下架、标「她爱吃 ♥」、订单查看、文案与分类配置。
+
+---
+
+## 从零部署
+
+看 **[`SETUP.md`](./SETUP.md)** —— 9 步操作手册，从注册个人小程序到把体验版发给对方，带报错速查表。
+
+只需要填 **2 个值**：`project.config.json` 的 AppID、`miniprogram/app.js` 的 `CLOUD_ENV`。其他全部可在小程序里改，不用碰代码。
+
+> ⚠️ 部署前请先看 [`HANDOFF.SECRETS.md`](./HANDOFF.SECRETS.md) —— 说明哪些能公开、哪些绝不能提交。
+
+---
+
+## 文档
 
 | 文档 | 给谁看 | 内容 |
 |---|---|---|
-| **`SETUP.md`** | 你（人类） | **第一次部署看这个。** 从注册小程序到她在手机上点到菜的完整操作手册，带报错速查表 |
-| **`HANDOFF.md`** | 你 + 未来的 AI | ⭐ **要改代码就先把这份全文粘给 AI。** 环境信息、文件清单、数据模型、接口清单、硬性约定、踩过的 12 个坑、自检脚本、提需求模板 |
-| `CHANGELOG.md` | 你 | 每个版本改了什么、**要做什么才能生效**、回滚方法 |
-| `README.md` | 你 | 就是这份，项目结构与设计取舍 |
-| `../DESIGN.md` | 你 + AI | 最初的需求分析：每个设计决策的来龙去脉（Q1–Q44） |
+| **[`SETUP.md`](./SETUP.md)** | 人类 | **第一次部署看这个。** 注册 → 部署 → 发体验版，带报错速查表 |
+| **[`HANDOFF.md`](./HANDOFF.md)** | 人类 + AI | ⭐ **要改代码就先把这份全文粘给 AI。** 环境信息、文件清单、数据模型、接口清单、硬性约定、踩过的 12 个坑、自检脚本、提需求模板 |
+| [`HANDOFF.SECRETS.md`](./HANDOFF.SECRETS.md) | 人类 | 提交前的安全检查清单 + 密钥泄露了怎么办 |
+| [`CHANGELOG.md`](./CHANGELOG.md) | 人类 | 每版改了什么、**要做什么才能生效**、回滚方法 |
+| [`docs/DESIGN.md`](./docs/DESIGN.md) | 人类 + AI | 最初的需求分析（44 个问题的问答），每个设计决策的来龙去脉 |
 
 ---
 
@@ -22,9 +54,16 @@
 
 ```
 点菜小程序/
-├── SETUP.md                 ← 先看这个
 ├── README.md
-├── project.config.json      微信开发者工具的项目配置（★ 填 AppID 的地方）
+├── SETUP.md                  ← 第一次部署看这个
+├── HANDOFF.md                ← 要改代码就把它全文粘给 AI
+├── HANDOFF.SECRETS.md        提交前的安全检查清单
+├── CHANGELOG.md              版本记录
+├── LICENSE                   MIT
+├── .gitignore
+├── project.config.json       微信开发者工具的项目配置（★ 填 AppID 的地方）
+├── docs/DESIGN.md            最初的需求分析（44 个问答）
+├── _versions/                版本封存快照（已 gitignore，只在本地）
 │
 ├── cloudfunctions/           云函数（只有 2 个，只需要上传 2 次）
 │   ├── login/                识别"现在打开的人是谁"

@@ -44,13 +44,16 @@
 ```
 点菜小程序/
 ├── HANDOFF.md              ← 本文件
+├── HANDOFF.SECRETS.md      提交前的安全检查清单 + 密钥泄露处理
 ├── CHANGELOG.md            版本记录（改完要追加一条）
 ├── SETUP.md                人类操作手册（注册→部署→发体验版，9 步）
 ├── README.md               项目说明与设计取舍
+├── LICENSE                 MIT
 ├── project.config.json     开发者工具配置（★ 含 AppID）
-├── project.private.config.json  ← 开发者工具自动生成，见 §8 的坑 8
+├── project.private.config.json  ← 开发者工具自动生成，见 §8 的坑 8（已 gitignore）
 ├── .gitignore
-├── _versions/              版本封存快照（git 和打包都排除它）
+├── docs/DESIGN.md          最初的需求分析（44 个问答，设计决策的来龙去脉）
+├── _versions/              版本封存快照（已 gitignore）
 │
 ├── cloudfunctions/
 │   ├── login/index.js      首次打开时创建 config 文档 + 认领大厨（保留兜底，主流程已经不走它）
